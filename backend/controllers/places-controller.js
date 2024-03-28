@@ -6,20 +6,6 @@ const Place = require("../models/place");
 const User = require("../models/user");
 const mongoose = require("mongoose");
 
-let DUMMY_PLACES = [
-    {
-        id: "p1",
-        title: "Empire State Building",
-        description: "One of the most famous skyscrapers in the world!",
-        location: {
-            lat: 40.7484405,
-            lng: -73.9882393,
-        },
-        address: "20 W 34th St., New York, NY 10001, United States",
-        creator: "u1",
-    },
-];
-
 const getPlaceById = async (req, res, next) => {
     const placeId = req.params.pid;
 
@@ -42,19 +28,19 @@ const getPlaceById = async (req, res, next) => {
 const getPlacesByUserId = async (req, res, next) => {
     const userId = req.params.uid;
 
-    let places;
+    let userWithPlaces;
 
     try {
-        places = await Place.find({ creator: userId });
+        userWithPlaces = await User.findById(userId).populate("places");
     } catch (err) {
         const error = new HttpError("Fetching places failed, please try again later.", 500);
         return next(error);
     }
 
-    if (!places || places.length === 0) {
+    if (!userWithPlaces || userWithPlaces.places.length === 0) {
         return next(new HttpError("Could not find a places for provided user id.", 404));
     }
-    res.json({ places: places.map((place) => place.toObject({ getter: true })) });
+    res.json({ places: userWithPlaces.places.map((place) => place.toObject({ getter: true })) });
 };
 
 const createPlace = async (req, res, next) => {

@@ -2,13 +2,18 @@ import React, { useState, useContext } from "react";
 import "./Auth.css";
 import Card from "../../shared/components/UIElements/Card";
 import Input from "../../shared/components/FormElements/Input";
-import { VALIDATOR_EMAIL, VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE } from "../../util/validators";
+import {
+    VALIDATOR_EMAIL,
+    VALIDATOR_MINLENGTH,
+    VALIDATOR_REQUIRE,
+} from "../../util/validators";
 import useForm from "../../shared/hooks/form-hook";
 import Button from "../../shared/components/FormElements/Button";
 import { AuthContext } from "../../shared/context/auth-context";
 const Auth = (props) => {
     const auth = useContext(AuthContext);
     const [isLoginMode, setIsLoginMode] = useState(true);
+
     const [formState, inputHandler, setFormData] = useForm(
         {
             email: {
@@ -22,6 +27,7 @@ const Auth = (props) => {
         },
         false
     );
+
     const switchModeHandler = () => {
         if (!isLoginMode) {
             setFormData(
@@ -29,7 +35,8 @@ const Auth = (props) => {
                     ...formState.inputs,
                     name: undefined,
                 },
-                formState.inputs.email.isValid && formState.inputs.password.isValid
+                formState.inputs.email.isValid &&
+                    formState.inputs.password.isValid
             );
         } else {
             setFormData(
@@ -45,11 +52,36 @@ const Auth = (props) => {
         }
         setIsLoginMode((prevMode) => !prevMode);
     };
-    const authSubmitHandler = (event) => {
+
+    const authSubmitHandler = async (event) => {
         event.preventDefault();
-        console.log(formState.inputs);
+
+        if (isLoginMode) {
+        } else {
+            try {
+                const response = await fetch(
+                    "http://localhost:5000/api/users/signup",
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            name: formState.inputs.name.value,
+                            email: formState.inputs.email.value,
+                            password: formState.inputs.password.value,
+                        }),
+                    }
+                );
+
+                const responseData = await response.json();
+                console.log(responseData);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+
         auth.login();
     };
+
     return (
         <Card className="authentication">
             <h2>Login Required</h2>

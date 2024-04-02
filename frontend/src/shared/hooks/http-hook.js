@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 
 export const useHttpClient = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -11,6 +11,7 @@ export const useHttpClient = () => {
             setIsLoading(true);
             const httpAbortCtrl = new AbortController();
             activeHttpRequests.current.push(httpAbortCtrl);
+
             try {
                 const response = await fetch(url, {
                     method,
@@ -18,14 +19,27 @@ export const useHttpClient = () => {
                     headers,
                     signal: httpAbortCtrl.signal,
                 });
+
                 const responseData = await response.json();
+
+                activeHttpRequests.current = activeHttpRequests.current.filter(
+                    (reqCtrl) => reqCtrl !== httpAbortCtrl
+                );
+
                 if (!response.ok) {
                     throw new Error(responseData.message);
                 }
+
+                setIsLoading(false);
+                return responseData;
             } catch (err) {
-                setError(err.message);
+                if (err.message.includes("aborted a request")) {
+                } else {
+                    setError(err.message);
+                    setIsLoading(false);
+                    throw err;
+                }
             }
-            setIsLoading(false);
         },
         []
     );

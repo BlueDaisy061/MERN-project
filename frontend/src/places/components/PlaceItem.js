@@ -21,6 +21,7 @@ const PlaceItem = (props) => {
         setShowConfirmModal(false);
         console.log("DELETING...");
     };
+
     return (
         <>
             <Modal
@@ -32,7 +33,11 @@ const PlaceItem = (props) => {
                 footer={<Button onClick={closeMapHandler}>CLOSE</Button>}
             >
                 <div className="map-container">
-                    <Map center={props.coordinates} zoom={16} style={{ backgroundColor: "green" }} />
+                    <Map
+                        center={props.coordinates}
+                        zoom={16}
+                        style={{ backgroundColor: "green" }}
+                    />
                 </div>
             </Modal>
             <Modal
@@ -51,7 +56,10 @@ const PlaceItem = (props) => {
                     </>
                 }
             >
-                <p>Do you want to proceed and delete this place? Please note that it can't be undone thereafter.</p>
+                <p>
+                    Do you want to proceed and delete this place? Please note
+                    that it can't be undone thereafter.
+                </p>
             </Modal>
             <li className="place-item">
                 <Card className="place-item__content">
@@ -67,7 +75,9 @@ const PlaceItem = (props) => {
                         <Button inverse onClick={openMapHandler}>
                             VIEW ON MAP
                         </Button>
-                        {auth.isLoggedIn && <Button to={`/places/${props.id}`}>EDIT</Button>}
+                        {auth.isLoggedIn && (
+                            <Button to={`/places/${props.id}`}>EDIT</Button>
+                        )}
                         {auth.isLoggedIn && (
                             <Button danger onClick={showDeleteWarningHandler}>
                                 DELETE

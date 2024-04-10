@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import "./Auth.css";
 import Card from "../../shared/components/UIElements/Card";
 import Input from "../../shared/components/FormElements/Input";
+import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 import {
     VALIDATOR_EMAIL,
     VALIDATOR_MINLENGTH,
@@ -39,6 +40,7 @@ const Auth = (props) => {
                 {
                     ...formState.inputs,
                     name: undefined,
+                    image: undefined,
                 },
                 formState.inputs.email.isValid &&
                     formState.inputs.password.isValid
@@ -51,6 +53,10 @@ const Auth = (props) => {
                         value: "",
                         isValid: false,
                     },
+                    image: {
+                        value: null,
+                        isValid: false,
+                    },
                 },
                 false
             );
@@ -60,6 +66,8 @@ const Auth = (props) => {
 
     const authSubmitHandler = async (event) => {
         event.preventDefault();
+
+        console.log(formState.inputs);
 
         if (isLoginMode) {
             try {
@@ -110,6 +118,9 @@ const Auth = (props) => {
                             errorText="Please enter a name."
                             onInput={inputHandler}
                         />
+                    )}
+                    {!isLoginMode && (
+                        <ImageUpload center id="image" onInput={inputHandler} />
                     )}
                     <Input
                         id="email"

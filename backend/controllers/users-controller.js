@@ -51,7 +51,7 @@ const signup = async (req, res, next) => {
     const createdUser = new User({
         name,
         email,
-        image: "https://wallpapers.com/images/hd/jimin-pictures-kfuu8l7d9efut4br.jpg",
+        image: req.file.path,
         password,
         places: [],
     });

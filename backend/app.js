@@ -6,6 +6,7 @@ const usersRoutes = require("./routes/users-routes");
 const HttpError = require("./models/http-error");
 const mongoose = require("mongoose");
 const fs = require("fs");
+require("dotenv").config();
 
 const app = express();
 
@@ -48,9 +49,12 @@ app.use((error, req, res, next) => {
     res.status(error.code || 500);
     res.json({ message: error.message || "An unknown error occurred!" });
 });
+
+console.log(process.env.DB_NAME);
+
 mongoose
     .connect(
-        "mongodb+srv://daisynguyen:Tbiytc1109@cluster0.awzmcpj.mongodb.net/mern?retryWrites=true&w=majority&appName=Cluster0"
+        `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.awzmcpj.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority&appName=Cluster0`
     )
     .then(() => {
         app.listen(5000, () => {

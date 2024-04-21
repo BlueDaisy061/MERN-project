@@ -67,7 +67,10 @@ const UpdatePlace = (props) => {
                     title: formState.inputs.title.value,
                     description: formState.inputs.description.value,
                 }),
-                { "Content-Type": "application/json" }
+                {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + auth.token,
+                }
             );
             navigate({ pathname: `/${auth.userId}/places` }, { replace: true });
         } catch (err) {}

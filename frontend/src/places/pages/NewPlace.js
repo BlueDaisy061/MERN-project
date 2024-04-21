@@ -46,7 +46,9 @@ const NewPlace = () => {
             formData.append("address", formState.inputs.address.value);
             formData.append("creator", auth.userId);
             formData.append("image", formState.inputs.image.value);
-            sendRequest("http://localhost:5000/api/places", "POST", formData);
+            sendRequest("http://localhost:5000/api/places", "POST", formData, {
+                Authorization: "Bearer " + auth.token,
+            });
 
             navigate({ pathname: "/" }, { replace: true });
         } catch (err) {}

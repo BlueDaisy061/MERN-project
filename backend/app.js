@@ -22,7 +22,7 @@ app.use((req, res, next) => {
     // Set custom headers for CORS
     res.header(
         "Access-Control-Allow-Headers",
-        "Content-type, Accept, X-Custom-Header"
+        "Content-type, Accept, X-Custom-Header, Authorization"
     );
 
     if (req.method === "OPTIONS") {

@@ -1,21 +1,28 @@
 const express = require("express");
+const path = require("path");
 const bodyParser = require("body-parser");
 const placesRoutes = require("./routes/places-routes");
 const usersRoutes = require("./routes/users-routes");
 const HttpError = require("./models/http-error");
 const mongoose = require("mongoose");
+const fs = require("fs");
 
 const app = express();
 
 app.use(bodyParser.json());
 
+app.use("/uploads/images", express.static(path.join("uploads", "images")));
+
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
+    res.header(
+        "Access-Control-Allow-Methods",
+        "GET,PUT,POST,PATCH,DELETE,OPTIONS"
+    );
     // Set custom headers for CORS
     res.header(
         "Access-Control-Allow-Headers",
-        "Content-type, Accept, X-Custom-Header"
+        "Content-type, Accept, X-Custom-Header, Authorization"
     );
 
     if (req.method === "OPTIONS") {
@@ -32,6 +39,9 @@ app.use((req, res, next) => {
     throw error;
 });
 app.use((error, req, res, next) => {
+    if (req.file) {
+        fs.unlink(req.file.path, (err) => console.log(err));
+    }
     if (res.headerSent) {
         return next(error);
     }
